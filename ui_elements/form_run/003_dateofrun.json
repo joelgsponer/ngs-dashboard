@@ -1,0 +1,8 @@
+{
+"type":"dateInput",
+"inputId":"dateofrun",
+"label":"Date of run",
+"help text":"Please indicate the date of the run (optional)",
+"value":"function(...){return(Sys.Date())}",
+"optional":true
+}

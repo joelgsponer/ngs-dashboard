@@ -1,0 +1,13 @@
+
+{
+"type"     :"selectInput",
+"inputId"  :"sampletype",
+"label"    :"Type of sample",
+"help text":"Plese indicate the type of sample. (optional)",
+"choices"  :["FFPE","Fresh frozen", "Cytology", "Blood", "Laser captured","Cell line", "Other"],
+"selected" :"FFPE",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}

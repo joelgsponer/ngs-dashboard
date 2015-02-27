@@ -1,0 +1,11 @@
+{
+"type"     :"numericInput",
+"inputId"  :"studyid",
+"label"    :"Study ID",
+"help text":"Please indicate the study ID. (optional)",
+"value"    :null,
+"min"      :null,
+"max"      :null,
+"step"     :null,
+"optional" :true
+}

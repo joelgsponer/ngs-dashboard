@@ -1,0 +1,17 @@
+{
+"type"     :"selectInput",
+"inputId"  :"researcher",
+"label"    :"Researcher",
+"help text":"Please select your name.",
+"choices"  :"function(db){
+	strSQL <- 'SELECT username
+               FROM   tbl_researchers'
+	x <-  dbGetQuery(db, strSQL)
+	return(c(x$username))
+	}",
+"selected" :"James Maxwell",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}

@@ -1,0 +1,11 @@
+{
+"type"     :"numericInput",
+"inputId"  :"inputammount",
+"label"    :"Ammount of input DNA",
+"help text":"Please indicate the ammount of DNA (absolute). (optional)",
+"value"    :null,
+"min"      :null,
+"max"      :null,
+"step"     :null,
+"optional" :true
+}

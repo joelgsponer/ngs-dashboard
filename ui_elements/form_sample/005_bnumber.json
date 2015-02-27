@@ -1,0 +1,8 @@
+{
+"type":"textInput",
+"inputId":"bnumber",
+"label":"B-number",
+"help text":"Please indicate the bnumber of the sample (optional)",
+"value":null,
+"optional":true
+}

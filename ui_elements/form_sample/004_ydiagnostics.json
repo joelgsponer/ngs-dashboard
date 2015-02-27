@@ -1,0 +1,12 @@
+{
+"type"     :"selectInput",
+"inputId"  :"diagnostics",
+"label"    :"Purpose",
+"help text":"Please select appropriate. (required)",
+"choices"  :["Diagnostics","Research","Other"],
+"selected" :"Research",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}

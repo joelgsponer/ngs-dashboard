@@ -1,0 +1,8 @@
+{
+"type":"textInput",
+"inputId":"tissuetype",
+"label":"Tissuetype",
+"help text":"Please specify the tissue the sample is derived from (e.g. organ). (optional)",
+"value":null,
+"optional":true
+}
