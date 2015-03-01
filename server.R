@@ -66,47 +66,67 @@ registerRun <- observe({
 #Tab VCF uplaod#
 ################
 #UI
-output$form_vcfupload <- renderUI({
-  fncCreateUI('ui_elements/form_vcfupload/',db = db, verbose = T)
+output$form_fileupload <- renderUI({
+  fncCreateUI('ui_elements/form_fileupload/',db = db, verbose = T)
 })
+
+#VCF
 #File upload
-uploadvcf <- observe({
-  if(input$uploadvcf != 0){
+observe({
+  if(input$uploadfiles != 0){
     writeLog("Button uploadvcf pressed")
     isolate({ 
       tryCatch({
           vcffile <- input$vcffiles
-          destination <- paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = "")
+          coveragefile <- input$coveragefiles
+
           writeLog(paste(
             "VCF upload\n",
             "Name:", vcffile[,"name"],"\n",
             "Path:", vcffile[,"datapath"],"\n",
-            "Destination:",destination,"\n"
+            "Destination:",paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = ""),"\n"
             ))
-          dbAddField(db, "tbl_vcf", field = "vcffile", type = "TEXT")
-          if(!(dbMatchingRecord(db, "tbl_vcf", vcffile$name, "vcffile", verbose = F))){
-            file.copy(vcffile$datapath, destination)
+          writeLog(paste(
+            "Coverage file upload\n",
+            "Name:", coveragefile[,"name"],"\n",
+            "Path:", coveragefile[,"datapath"],"\n",
+            "Destination:",paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = ""),"\n"
+            ))
+
+          dbAddField(db, "tbl_files", field = "vcffile", type = "TEXT")
+          dbAddField(db, "tbl_files", field = "coveragefile", type = "TEXT")
+
+          if(  !(dbMatchingRecord(db, "tbl_files", vcffile$name, "vcffile", verbose = F))
+             & !(dbMatchingRecord(db, "tbl_files", coveragefile$name, "coveragefile", verbose = F))
+            ){
+            file.copy(vcffile$datapath, paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = ""))
+            file.copy(coveragefile[,"datapath"], paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = ""))
             #cmd <- paste('echo "vcf analysis"')
             #print(cmd)
             #system(cmd, wait = F)
-            mess <- fncUItoDB('ui_elements/form_vcfupload/'
+            mess <- fncUItoDB('ui_elements/form_fileupload/'
               ,db = db
-              ,table = "tbl_vcf"
+              ,table = "tbl_files"
               ,dat = input
               ,primarykey.create = F
-              ,primarykey.val = dbGetQuery(db,paste("SELECT primarykey FROM tbl_run WHERE ngsfacilityid ='",input$form_vcfupload.ngsfacilityid,"'", sep = ""))
+              ,primarykey.val = dbGetQuery(db,paste("SELECT primarykey FROM tbl_run WHERE ngsfacilityid ='",input$form_fileupload.ngsfacilityid,"'", sep = ""))
             )            
-            dbInsertInto(db, "tbl_vcf", "vcffile",  vcffile$name, type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))  
-            dbInsertInto(db, "tbl_vcf", "timestamp",format(Sys.time()), type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))
-            if(mess$error == 0) fncResetUI(session,'ui_elements/form_vcfupload/', db = db,verbose = T)
+            dbInsertInto(db, "tbl_files", "vcffile",  vcffile$name, type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))  
+            dbInsertInto(db, "tbl_files", "coveragefile",  coveragefile$name, type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))              
+            dbInsertInto(db, "tbl_files", "timestamp",format(Sys.time()), type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))
+            
+
+          if(mess$error == 0) fncResetUI(session,'ui_elements/form_fileupload/', db = db,verbose = T)
               session$sendCustomMessage(
                 type = 'testmessage',
-                message = "SUCCESS:  You succesfully uploaded your VCF file."
+                message = "SUCCESS:  You succesfully uploaded your files"
             )
           }else{
+            if(dbMatchingRecord(db, "tbl_files", vcffile$name, "vcffile", verbose = F)) x <- "VCF"
+            if(dbMatchingRecord(db, "tbl_files", coveragefile$name, "coveragefile", verbose = F)) x <-"coverage"
             session$sendCustomMessage(
               type = 'testmessage',
-              message = "WARNING:  There is already a VCF file with the same name in the database, please rename your file and try again."
+              message = sprintf("WARNING:  There is already a %s file with the same name in the database, please rename your file and try again.",x)
             )
           }
         
@@ -116,6 +136,10 @@ uploadvcf <- observe({
          writeLog(as.character(e))
          print(vcffile)
          print(e)
+         session$sendCustomMessage(
+           type = 'testmessage',
+           message = sprintf("ERROR: %s - Please report to jgsponer@gmail.com", as.character(e))
+         )
       })
     })
   }
@@ -138,6 +162,47 @@ output$vcffilesuploaded <- renderPrint({
     cat('!No VCF files uploaded yet.\n')
   }
 })
+
+
+coveragefilesuploaded <- reactive({
+  if(is.null(input$coveragefiles)){
+    return(NULL)
+  }else{                  
+    return(input$coveragefiles[,1])
+  }
+})
+#Print upladed files
+output$coveragefilesuploaded <- renderPrint({
+  statusUpload <- coveragefilesuploaded()
+  cat("#Uploaded coverage files:\n ")
+  if(!(is.null(statusUpload))){
+    cat(paste("-->", statusUpload, "\n", sep = ""))
+  }else{
+    cat('!No coverage files uploaded yet.\n')
+  }
+})
+
+
+##########
+#QC Panel#
+##########
+output$googleVisTest <-renderGvis({
+df=data.frame(date=seq(1,100), 
+              "QC"=runif(100,0,100)
+              )
+              
+Bar <- gvisAreaChart(df
+  ,options=list(
+    series="[
+       {color:'green'}
+    ]"
+    ,curveType="function"
+    ,gvis.editor="Edit me!"
+    ,explorer="{ actions: ['dragToZoom', 'rightClickToReset'] }"
+  )
+)
+})
+
 ##############
 #Tab database#
 ##############
@@ -150,7 +215,7 @@ output$dataTableTblRun <- renderDataTable({
   if(input$show_tbl_run == T) dbGetRecords(db, "tbl_run")
 })
 output$dataTableTblVCF <- renderDataTable({
-  if(input$show_tbl_vcf == T) dbGetRecords(db, "tbl_vcf")
+  if(input$show_tbl_files == T) dbGetRecords(db, "tbl_files")
 })
 output$dataTableTblResearchers <- renderDataTable({
   if(input$show_tbl_researchers == T) dbGetRecords(db, "tbl_researchers")

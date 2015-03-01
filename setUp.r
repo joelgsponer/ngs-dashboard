@@ -86,7 +86,7 @@ tryCatch({
 
 tryCatch({
   dbSendQuery(conn = db, 
-  "CREATE TABLE tbl_vcf
+  "CREATE TABLE tbl_files
   (ID INTEGER PRIMARY KEY AUTOINCREMENT
   )")
 }, error = function(e){cat("#!Table creation failed, maybe the table already exists.", "\n")})

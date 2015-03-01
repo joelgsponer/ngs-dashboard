@@ -1,0 +1,19 @@
+{
+"type"     :"selectInput",
+"inputId"  :"ngsfacilityid",
+"label"    :"NGS facility ID",
+"help text":"Please select your name.",
+"choices"  :"function(db){
+	strSQL <- 'SELECT ngsfacilityid
+               FROM   tbl_run
+               WHERE  ngsfacilityid NOT IN (SELECT ngsfacilityid
+                                            FROM tbl_files)'
+	x <-  dbGetQuery(db, strSQL)
+	return(c(x$ngsfacilityid))
+	}",
+"selected" :"James Maxwell",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}

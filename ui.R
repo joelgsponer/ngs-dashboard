@@ -26,7 +26,10 @@ shinyUI(fluidPage(
         ,fileInput("vcffiles", "VCF file to upload:", multiple = F)
         ,helpText("Please choose the VCF files to upload")
         ,verbatimTextOutput("vcffilesuploaded")
-        ,actionButton("uploadvcf", "Upload")
+        ,fileInput("coveragefiles", "Coverage file to upload:", multiple = F)
+        ,helpText("Please choose the coverage files to upload")
+        ,verbatimTextOutput("coveragefilesuploaded")
+        ,actionButton("uploadfiles", "Upload")
         ,helpText("Changes to the database will only show after clicking on refresh in your browser")         
     )
     ,conditionalPanel(
@@ -35,7 +38,7 @@ shinyUI(fluidPage(
 	  ) 
     ,conditionalPanel(
       condition = "input.navigation==5"
-        ,selectInput("table", "Select the table you want to modifiy", c("---","tbl_samples", "tbl_run", "tbl_vcf", "tbl_researchers","tbl_operators"))          
+        ,selectInput("table", "Select the table you want to modifiy", c("---","tbl_samples", "tbl_run", "tbl_files", "tbl_researchers","tbl_operators"))          
         ,textInput("deleteID", "Delete Record by ID", NA)
         ,actionButton("deleteRecord", "Delete Record"), helpText("Record will only show as deleted after clicking on refresh in your browser")
     )  
@@ -57,11 +60,12 @@ shinyUI(fluidPage(
         ,uiOutput("form_run")
         ,value = 2
       )
-      ,tabPanel("3. VCF upload"
-        ,uiOutput("form_vcfupload")
+      ,tabPanel("3. File upload"
+        ,uiOutput("form_fileupload")
         ,value = 3
       )
       ,tabPanel("Realtime QC"
+        ,htmlOutput("googleVisTest")
         ,value = 4
       )
       ,tabPanel("Database management"
@@ -69,7 +73,7 @@ shinyUI(fluidPage(
         ,dataTableOutput("dataTableTblSamples")
         ,checkboxInput("show_tbl_run", "Show tbl_run", F)
         ,dataTableOutput("dataTableTblRun")
-        ,checkboxInput("show_tbl_vcf", "Show tbl_vcf", F)
+        ,checkboxInput("show_tbl_files", "Show tbl_files", F)
         ,dataTableOutput("dataTableTblVCF")
         ,checkboxInput("show_tbl_researchers", "Show tbl_researchers", F)
         ,dataTableOutput("dataTableTblResearchers")
