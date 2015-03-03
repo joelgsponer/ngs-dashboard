@@ -1,10 +1,10 @@
 fncCopyFiles <- function(files, where){
-ifelse(!(is.null(dim(files))), n <- dim(files)[1], n <- 1)
-for(i in seq(1, n)){
+  ifelse(!(is.null(dim(files))), n <- dim(files)[1], n <- 1)
+  for(i in seq(1, n)){
     if(!(file.exists(paste(where,files, sep = "/")))){
-         file.copy(files[i,4], paste(where,files[i,1], sep = "/"))
+      file.copy(files[i,4], paste(where,files[i,1], sep = "/"))
     }
-}
+  }
 }
 
 writeLog <- function(message){

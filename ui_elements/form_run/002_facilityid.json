@@ -11,7 +11,7 @@
 	x <-  dbGetQuery(db, strSQL)
 	return(c(x$ngsfacilityid))
 	}",
-"selected" :"James Maxwell",
+"selected" :"",
 "multiple" :false,
 "selectize":true,
 "width"    :null,

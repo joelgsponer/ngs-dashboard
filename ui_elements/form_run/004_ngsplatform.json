@@ -1,0 +1,12 @@
+{
+"type"     :"selectInput",
+"inputId"  :"ngsplatform",
+"label"    :"NGS platform",
+"help text":"Please select the used NGS platform.",
+"choices" :["Ion Torrent PGM","Ion Proton"],
+"selected" :"Ion Torrent PGM",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}
