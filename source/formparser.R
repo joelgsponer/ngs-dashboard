@@ -1,7 +1,8 @@
+#Create a form from a folder with json documents describing the fields
 fncCreateUI <- function(path,  verbose = F,...){
   form <- unlist(strsplit(path,"/"))[length(unlist(strsplit(path,"/")))]
   
-  #function to replace null with NA if needed
+  #function to replace null with NA if needed and evaluate a function that was given in the field description
   f <- function(x){
     if(is.null(x)) x <- NA
     if(grepl("function", x)){
@@ -54,13 +55,23 @@ fncCreateUI <- function(path,  verbose = F,...){
                           ,label    = f(HTML(UIelement.definition$label))
                           ,value    = f(UIelement.definition$value)
                         )
-                        ,radioButtons + radioButtons(
+                        ,radioButtons = radioButtons(
                            inputId   =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,label     =  f(HTML(UIelement.definition$label))
                           ,choices   =  f(UIelement.definition$choices)
                           ,selected  =  f(UIelement.definition$selected)
                           ,inline    =  f(UIelement.definition$inline)
                         )
+                        ,textArea = HTML(sprintf(
+                        '<label for="%s">%s</label>
+                        <textarea id="%s" rows="%s" cols="%s">%s</textarea>'
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(HTML(UIelement.definition$label))
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(UIelement.definition$rows)
+                        ,f(UIelement.definition$cols)
+                        ,f(UIelement.definition$value)                       
+                        ))
       )
     }, error = function(e){return(e)})
     helpt <- HTML(gsub("NA", "", paste(UIelement.definition$'help text',"<br>", sep = "")))
@@ -72,10 +83,23 @@ fncCreateUI <- function(path,  verbose = F,...){
   if(verbose)print("Response:");print(res)
   return(res)
 }
-
-
-fncUItoDB <- function(path,db,table,dat, primarykey.add = F, primarykey.create = F, primarykey.label=NA,primarykey.val=NA,timestamp = T, update=T,verbose = T){
+#Save the Form content to a database
+fncUItoDB <- function(path
+  ,db
+  ,table,dat
+  , primarykey.add = F
+  , primarykey.create = F
+  , primarykey.label=NA
+  , primarykey.val=NA
+  , timestamp = T
+  , check.fields = T
+  , update=T
+  , verbose = T){
   require("RJSONIO")
+  if(check.fields == T){
+    check <- fncCheckOptional(path,dat)
+    if(check$result == F) return(check)
+  }
   form <- unlist(strsplit(path,"/"))[length(unlist(strsplit(path,"/")))]
   UIelements <- list.files(path)
   if(verbose) print(UIelements)
@@ -106,6 +130,12 @@ fncUItoDB <- function(path,db,table,dat, primarykey.add = F, primarykey.create =
        cat("primarykey.val:",primarykey.val, "\n")
        cat("Error message:\n")
        print(e)
+       return(list(
+          message ="Error while creating primarykey"
+         ,error   = 1
+         ,e       = e
+         ,result  = FALSE
+       ))
   })
   }else{
     if(is.na(primarykey.label) | is.na(primarykey.val)){
@@ -128,6 +158,13 @@ fncUItoDB <- function(path,db,table,dat, primarykey.add = F, primarykey.create =
        cat("inputId:", UIelement.definition$inputId, "\n")
        cat("Error message:\n")
        print(e)
+       return(list(
+          message   = "Error while adding record to the database"
+         ,UIelement = UIelement.definition$inputId
+         ,error     = 1
+         ,e         = e
+         ,result = FALSE
+        ))
   })
   tryCatch({
     if(timestamp) dbInsertInto(db, table, "timestamp",format(Sys.time()), type = "TEXT", verbose = T, c(primarykey.label, primarykey.val))
@@ -135,16 +172,22 @@ fncUItoDB <- function(path,db,table,dat, primarykey.add = F, primarykey.create =
     cat("!Error while adding timestamp\n")
     cat("Error message:\n")
     print(e)
+    return(list(
+       message = "Error while adding timestamp."
+      ,error   = 1
+      ,e       = e
+      ,result = FALSE
+    ))
   })
   return(list(
-     "primarykey.label" = primarykey.label
-    ,"primarykey.val"   = primarykey.val
-    ,"message"          = paste("You successfully created a new record.")
-    ,"error"            = 0
-    ))
+     primarykey.label = primarykey.label
+    ,primarykey.val   = primarykey.val
+    ,message          = "You successfully created a new record."
+    ,error            = 0
+    ,result = TRUE
+  ))
 }
-
-
+#Revert a form to a initial state after
 fncResetUI <- function(session,path, verbose = F,...){
   form <- unlist(strsplit(path,"/"))[length(unlist(strsplit(path,"/")))]
 
@@ -200,7 +243,24 @@ fncResetUI <- function(session,path, verbose = F,...){
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,label    = f(HTML(UIelement.definition$label))
                           ,value    = f(UIelement.definition$value)
-                        )        
+                        )
+                        ,radioButtons = radioButtons(
+                           inputId   =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,label     =  f(HTML(UIelement.definition$label))
+                          ,choices   =  f(UIelement.definition$choices)
+                          ,selected  =  f(UIelement.definition$selected)
+                          ,inline    =  f(UIelement.definition$inline)
+                        )
+                        ,textArea = HTML(sprintf(
+                        '<label for="%s">%s</label><br>
+                        <textarea id="%s" rows="%s" cols="%s">%s</textarea>'
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(HTML(UIelement.definition$label))
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(UIelement.definition$rows)
+                        ,f(UIelement.definition$cols)
+                        ,f(UIelement.definition$value)                       
+                        ))     
       )
     },error=function(e){return(e)})
   } 
@@ -209,7 +269,7 @@ fncResetUI <- function(session,path, verbose = F,...){
     error = 0
   ))
 }
-
+#Create a Unique primarz kez, which can be used to store data in a database
 fncCreateUniquePrimarykey <- function(db,table,primarykey.label = "primarykey"){
   require(random)
   primarykey.is.unique <- F
@@ -220,4 +280,117 @@ fncCreateUniquePrimarykey <- function(db,table,primarykey.label = "primarykey"){
     if(dbMatchingRecord(db, table, field = primarykey.label, value = primarykey.val) == F) primarykey.is.unique <- T
   }
   return(primarykey.val)
+}
+#Check if al required filed were filled out
+fncCheckOptional <- function(path,dat, verbose =F){
+  tryCatch({
+    debug.list <- list()
+    form <- unlist(strsplit(path,"/"))[length(unlist(strsplit(path,"/")))]
+    require("RJSONIO")
+    UIelements <- list.files(path)
+    if(verbose) print("Form definitions:");print(UIelements)
+    for (UIelement in UIelements){
+      UIelement.definition <- fromJSON(paste(path,UIelement,sep = ""))      
+      if(verbose) print("UIelements.definition:");print(UIelement.definition)
+      inputId <- UIelement.definition$inputId
+      val <- dat[[paste(form,inputId,sep = ".")]]
+      debug.list <~ c(debug.list, list(inputId = val))       
+      if(UIelement.definition$optional == F){
+        if(length(val) == 0 | is.na(val) | is.null(val) | val == ""){
+          return(
+            list(
+               message=sprintf("Not all required fields have been filled out, please check:%s",UIelement.definition$label)
+              ,result = FALSE
+              ,error = 0
+            )
+          )
+        }
+      }else{
+          return(
+            list(
+               message="All nessecary fields have been filled out"
+              ,result = TRUE
+              ,error = 0
+            )
+          )
+      }
+    }
+  }, error = function(e){
+    return(list(
+      message = sprintf("Error while checking required fields %s", as.character(e))
+      ,error = 1
+      ,result = FALSE
+      ,e = e
+    ))
+  })
+}
+
+fncUpdateUI <- function(path
+  , db
+  , table
+  , primarykey.label
+  , primarykey.value
+  , verbose = F
+  , session
+  ){
+  form <- unlist(strsplit(path,"/"))[length(unlist(strsplit(path,"/")))]
+  r <- dbMatchingRecord(db, table, field = primarykey.label, value = primarykey.value, record.return = T)
+  require("RJSONIO")
+  UIelements <- list.files(path)
+  if(verbose) print("Form definitions:");print(UIelements)
+  
+  res <- list()
+  
+  for(i in UIelements){
+    tryCatch({
+      UIelement.definition <- fromJSON(paste(path,i,sep = ""))
+      if(verbose) print("UIelement:");print(UIelement.definition)
+      writeLog(paste('Update',paste(form,UIelement.definition$inputId, sep = "."), 'to', r[1,UIelement.definition$inputId]))
+      switch(UIelement.definition$type,
+                        selectInput   = updateSelectInput(
+                          session
+                          ,inputId   = paste(form,UIelement.definition$inputId, sep = ".")
+                          ,selected  = as.character(r[1,UIelement.definition$inputId])
+                        )
+                        ,numericInput = updateNumericInput(
+                          session
+                          ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,value    = as.numeric(r[1,UIelement.definition$inputId])
+                        )
+                        ,textInput    = updateTextInput(
+                          session
+                          ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,value    = r[1,UIelement.definition$inputId]
+                        )
+                        ,checkboxInput = updateCheckboxInput(
+                          session
+                          ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,value    = as.logical(r[,UIelement.definition$inputId])
+                        )
+                        ,dateInput = dateInput(
+                          session
+                          ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,value    = r[1,UIelement.definition$inputId]
+                        )
+                        ,radioButtons = radioButtons(
+                           inputId   =  paste(form,UIelement.definition$inputId, sep = ".")
+                          ,selected  =  r[,UIelement.definition$inputId]
+                        )
+                        ,textArea = HTML(sprintf(
+                        '<label for="%s">%s</label><br>
+                        <textarea id="%s" rows="%s" cols="%s">%s</textarea>'
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(HTML(UIelement.definition$label))
+                        ,paste(form,UIelement.definition$inputId, sep = ".")
+                        ,f(UIelement.definition$rows)
+                        ,f(UIelement.definition$cols)
+                        ,r[1,UIelement.definition$inputId]                       
+                        ))     
+      )
+    },error=function(e){return(e)})
+  } 
+  return(list(
+    message = "Form was updated successfully.",
+    error = 0
+  ))
 }

@@ -4,5 +4,5 @@
 "label":"Researcher sample ID",
 "help text":"Please indicate your personal sample ID. (required)",
 "value":null,
-"optional":false
+"optional" :false
 }

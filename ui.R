@@ -5,7 +5,14 @@ source('setUp.r')
 shinyUI(fluidPage(
   includeCSS("www/custom.css"),
   singleton(tags$head(tags$script(src = "message-handler.js"))),
-
+  tags$head(tags$script(HTML('
+      Shiny.addCustomMessageHandler("jsCode",
+        function(message) {
+          console.log(message)
+          eval(message.code);
+        }
+      );
+    '))),
   # Application title
   headerPanel("NGS Dashboard"),
 
@@ -14,7 +21,9 @@ shinyUI(fluidPage(
 	 	  condition = "input.navigation==1"      
         ,HTML("<h4>Click here to register your sample:</h4>")
         ,actionButton("registerSample", "Register sample"), helpText("Record will only show after clicking on refresh in your browser")
-	  )
+        ,textInput("sample.review.primarykey", "Select sample to review", NA)
+        ,actionButton("sample.review.btn", "Register sample"), helpText("Record will only show after clicking on refresh in your browser")	  
+    )
 	  ,conditionalPanel(
       condition = "input.navigation==2"
         ,HTML("<h4>Click here to register your run:</h4>")

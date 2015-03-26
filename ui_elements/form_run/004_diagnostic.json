@@ -1,0 +1,11 @@
+{
+"type"     :"selectInput",
+"inputId"  :"diagnostics",
+"label"    :"Purpose",
+"help text":"Please select appropriate.",
+"choices"  :["Mortimer","Gandalf"],
+"selected" :"James Maxwell",
+"multiple" :false,
+"slectize" :false,
+"optional" :false
+}

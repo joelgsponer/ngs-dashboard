@@ -20,13 +20,37 @@ output$form_sample <- renderUI({
 registerSample <- observe({
   if(input$registerSample != 0) {
     isolate({
+      disableActionButton("registerSample",session)
       writeLog("Button registerSample pressed")
-      mess <- fncUItoDB('ui_elements/form_sample/', db = db, table = "tbl_samples",dat = input, primarykey.create = T)
-      if(mess$error == 0) fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
-      session$sendCustomMessage(
-        type = 'testmessage',
-        message = mess
+      writeLog(input$form_sample.studyid)
+      mess <- fncUItoDB('ui_elements/form_sample/'
+        ,db = db
+        ,table = "tbl_samples"
+        ,dat = input
+        ,primarykey.create = T
+        ,check.fields = T
       )
+      if(mess$error == 0 & mess$result) fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
+      session$sendCustomMessage(
+         type = 'testmessage'
+        ,message = mess
+      )
+      enableActionButton("registerSample",session)
+    })
+  }
+})
+
+#Database management - buttons
+observe({
+  if(input$sample.review.btn != 0) {
+    isolate({
+      fncUpdateUI(path = 'ui_elements/form_sample/'
+        ,db=db
+        ,table='tbl_samples'
+        ,primarykey.label='primarykey'
+        ,primarykey.value=input$sample.review.primarykey
+        ,session = session
+      )      
     })
   }
 })
@@ -43,6 +67,7 @@ output$form_run <- renderUI({
 registerRun <- observe({
   if(input$registerRun != 0) {
     isolate({
+      disableActionButton("registerRun",session)
       session$sendCustomMessage(type='testmessage',message=paste("SELECT primarykey FROM tbl_samples WHERE ngsfacilityid ='",input$form_run.ngsfacilityid,"'", sep = ""))
       writeLog("Button registerRun pressed")
       mess <- fncUItoDB('ui_elements/form_run/'
@@ -51,12 +76,14 @@ registerRun <- observe({
         ,dat = input
         ,primarykey.create = F
         ,primarykey.val = dbGetQuery(db,paste("SELECT primarykey FROM tbl_samples WHERE ngsfacilityid ='",input$form_run.ngsfacilityid,"'", sep = ""))
+        ,check.fields = T
       )
-      if(mess$error == 0)fncResetUI(session = session,db = db,'ui_elements/form_run/', verbose = T)
+      if(mess$error == 0 & mess$result)fncResetUI(session = session,db = db,'ui_elements/form_run/', verbose = T)
       session$sendCustomMessage(
         type = 'testmessage',
         message = mess
       )
+      enableActionButton("registerRun",session)
     })
   }
 })
@@ -75,7 +102,8 @@ output$form_fileupload <- renderUI({
 observe({
   if(input$uploadfiles != 0){
     writeLog("Button uploadvcf pressed")
-    isolate({ 
+    isolate({
+      disableActionButton("uploadfiles",session) 
       tryCatch({
           vcffile <- input$vcffiles
           coveragefile <- input$coveragefiles
@@ -110,13 +138,14 @@ observe({
               ,dat = input
               ,primarykey.create = F
               ,primarykey.val = dbGetQuery(db,paste("SELECT primarykey FROM tbl_run WHERE ngsfacilityid ='",input$form_fileupload.ngsfacilityid,"'", sep = ""))
+              ,check.fields = F
             )            
             dbInsertInto(db, "tbl_files", "vcffile",  vcffile$name, type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))  
             dbInsertInto(db, "tbl_files", "coveragefile",  coveragefile$name, type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))              
             dbInsertInto(db, "tbl_files", "timestamp",format(Sys.time()), type = "TEXT", verbose = T, c(mess$primarykey.label, mess$primarykey.val))
             
 
-          if(mess$error == 0) fncResetUI(session,'ui_elements/form_fileupload/', db = db,verbose = T)
+          if(mess$error == 0 & mess$result) fncResetUI(session,'ui_elements/form_fileupload/', db = db,verbose = T)
               session$sendCustomMessage(
                 type = 'testmessage',
                 message = "SUCCESS:  You succesfully uploaded your files"
@@ -141,6 +170,7 @@ observe({
            message = sprintf("ERROR: %s - Please report to jgsponer@gmail.com", as.character(e))
          )
       })
+      enableActionButton("uploadfiles",session)
     })
   }
 })

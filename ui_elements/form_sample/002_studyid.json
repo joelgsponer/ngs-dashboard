@@ -7,5 +7,5 @@
 "min"      :null,
 "max"      :null,
 "step"     :null,
-"optional" :true
+"optional" :false
 }

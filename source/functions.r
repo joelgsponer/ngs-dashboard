@@ -31,3 +31,14 @@ helpPopup <- function(title, content,
     )
   )
 }
+
+disableActionButton <- function(id,session) {
+  session$sendCustomMessage(type="jsCode",
+                             list(code= paste("$('#",id,"').prop('disabled',true)"
+                                    ,sep="")))
+}
+enableActionButton <- function(id,session) {
+  session$sendCustomMessage(type="jsCode",
+                             list(code= paste("$('#",id,"').prop('disabled',false)"
+                                    ,sep="")))
+} 

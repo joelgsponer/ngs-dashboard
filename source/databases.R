@@ -91,10 +91,11 @@ dbInsertInto<- function(db, table, field, value, type = "TEXT", verbose = F, whe
 
 
 #check if record is valid
-dbMatchingRecord <- function(db, table, value, field, verbose = F){
+dbMatchingRecord <- function(db, table, value, field, verbose = F, record.return =F){
     strSQL <- paste("SELECT * from ", table, "WHERE ", field, "= ",paste("'", value, "'", sep = ""))
     if(verbose) print(strSQL)
     matchingRecords <- dbGetQuery(db, strSQL)
+    if(record.return) return(matchingRecords)
     if(dim(matchingRecords)[1] > 0) return(T)
     else return(F)
 }

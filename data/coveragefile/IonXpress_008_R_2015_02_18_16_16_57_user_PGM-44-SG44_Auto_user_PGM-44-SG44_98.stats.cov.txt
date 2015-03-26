@@ -1,0 +1,34 @@
+Coverage Analysis Report
+
+Sample Name: RV108
+Reference Genome: hg19
+Target Regions: CHP2.20131001.designed
+Alignments: IonXpress_008_R_2015_02_18_16_16_57_user_PGM-44-SG44_Auto_user_PGM-44-SG44_98
+
+Number of mapped reads:         471551
+Percent reads on target:        99.06%
+
+Number of amplicons:                207
+Total assigned amplicon reads:      467136
+Percent assigned amplicon reads:    99.06%
+Average reads per amplicon:         2257
+Uniformity of amplicon coverage:    97.58%
+Amplicons with at least 1 read:     100.00%
+Amplicons with at least 20 reads:   100.00%
+Amplicons with at least 100 reads:  100.00%
+Amplicons with at least 500 reads:  97.58%
+Amplicons with no strand bias:       100.00%
+Amplicons reading end-to-end:        96.14%
+
+Total aligned base reads:          51171367
+Total base reads on target:        46929839
+Bases in target regions:           22027
+Percent base reads on target:      91.71%
+Average base coverage depth:       2131
+Uniformity of base coverage:       97.92%
+Target base coverage at 1x:        100.00%
+Target base coverage at 20x:       100.00%
+Target base coverage at 100x:      99.94%
+Target base coverage at 500x:      97.91%
+Target bases with no strand bias:  99.01%
+Percent end-to-end reads:          92.33%
