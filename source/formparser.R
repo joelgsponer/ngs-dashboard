@@ -123,7 +123,7 @@ fncUItoDB <- function(path
       }
     }
     if(is.na(primarykey.val)) primarykey.val <- dat[[primarykey.label]]
-    dbInsertInto(db, table, field = primarykey.label, value = primarykey.val, type = "TEXT", verbose = T)
+    if(dbMatchingRecord(db, table, field = primarykey.label, value = primarykey.val) == F) dbInsertInto(db, table, field = primarykey.label, value = primarykey.val, type = "TEXT", verbose = T)
   }, error = function(e){
        cat("!Error while creating primarykey\n")
        cat("primarykey.label:",primarykey.label, "\n")
@@ -238,13 +238,13 @@ fncResetUI <- function(session,path, verbose = F,...){
                           ,label    = f(HTML(UIelement.definition$label))
                           ,value    = UIelement.definition$value
                         )
-                        ,dateInput = dateInput(
+                        ,dateInput = updateDateInput(
                           session
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,label    = f(HTML(UIelement.definition$label))
                           ,value    = f(UIelement.definition$value)
                         )
-                        ,radioButtons = radioButtons(
+                        ,radioButtons = updateRadioButtons(
                            inputId   =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,label     =  f(HTML(UIelement.definition$label))
                           ,choices   =  f(UIelement.definition$choices)
@@ -328,7 +328,7 @@ fncCheckOptional <- function(path,dat, verbose =F){
 fncUpdateUI <- function(path
   , db
   , table
-  , primarykey.label
+  , primarykey.label = primarykey
   , primarykey.value
   , verbose = F
   , session
@@ -350,29 +350,30 @@ fncUpdateUI <- function(path
                         selectInput   = updateSelectInput(
                           session
                           ,inputId   = paste(form,UIelement.definition$inputId, sep = ".")
+                          ,choices   = as.character(r[,UIelement.definition$inputId])
                           ,selected  = as.character(r[1,UIelement.definition$inputId])
                         )
                         ,numericInput = updateNumericInput(
                           session
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
-                          ,value    = as.numeric(r[1,UIelement.definition$inputId])
+                          ,value    =  as.numeric(r[1,UIelement.definition$inputId])
                         )
-                        ,textInput    = updateTextInput(
+                        ,textInput  = updateTextInput(
                           session
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
-                          ,value    = r[1,UIelement.definition$inputId]
+                          ,value    =  r[1,UIelement.definition$inputId]
                         )
                         ,checkboxInput = updateCheckboxInput(
                           session
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,value    = as.logical(r[,UIelement.definition$inputId])
                         )
-                        ,dateInput = dateInput(
+                        ,dateInput  =   updateDateInput(
                           session
                           ,inputId  =  paste(form,UIelement.definition$inputId, sep = ".")
-                          ,value    = r[1,UIelement.definition$inputId]
+                          ,value    =  as.Date(r[1,UIelement.definition$inputId])
                         )
-                        ,radioButtons = radioButtons(
+                        ,radioButtons = updateRadioButtons(
                            inputId   =  paste(form,UIelement.definition$inputId, sep = ".")
                           ,selected  =  r[,UIelement.definition$inputId]
                         )
@@ -390,7 +391,9 @@ fncUpdateUI <- function(path
     },error=function(e){return(e)})
   } 
   return(list(
-    message = "Form was updated successfully.",
-    error = 0
+     primarykey.label = primarykey.label
+    ,primarykey.val = tryCatch(r[,'primarykey'], error = function(e){return(e)})
+    ,message = "Form was updated successfully."
+    ,error = 0
   ))
 }

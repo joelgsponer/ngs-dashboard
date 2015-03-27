@@ -21,14 +21,16 @@ shinyUI(fluidPage(
 	 	  condition = "input.navigation==1"      
         ,HTML("<h4>Click here to register your sample:</h4>")
         ,actionButton("registerSample", "Register sample"), helpText("Record will only show after clicking on refresh in your browser")
-        ,textInput("sample.review.primarykey", "Select sample to review", NA)
-        ,actionButton("sample.review.btn", "Register sample"), helpText("Record will only show after clicking on refresh in your browser")	  
+        ,selectInput("sample.modify.primarykey", "Select sample to modifiy", NA)
+        ,actionButton("sample.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")	  
     )
 	  ,conditionalPanel(
       condition = "input.navigation==2"
         ,HTML("<h4>Click here to register your run:</h4>")
         ,actionButton("registerRun", "Register run"), helpText("Record will only show after clicking on refresh in your browser")
-	  )
+        ,selectInput("run.modify.primarykey", "Select sample to modifiy", NA)
+        ,actionButton("run.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")     	  
+    )
 	  ,conditionalPanel(
       condition = "input.navigation==3" 
         ,HTML("<font color='red'>Please note, files with the same filename can only be uploaded once - please change the filename if necessary!</font><br><br>") 
@@ -39,7 +41,9 @@ shinyUI(fluidPage(
         ,helpText("Please choose the coverage files to upload")
         ,verbatimTextOutput("coveragefilesuploaded")
         ,actionButton("uploadfiles", "Upload")
-        ,helpText("Changes to the database will only show after clicking on refresh in your browser")         
+        ,helpText("Changes to the database will only show after clicking on refresh in your browser")
+        ,selectInput("vcffile.modify.primarykey", "Select sample to modifiy", NA)
+        ,actionButton("vcffile.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")     
     )
     ,conditionalPanel(
       condition = "input.navigation==4"          

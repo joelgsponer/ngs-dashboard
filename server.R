@@ -8,6 +8,10 @@ source('setUp.r')
 #This is the server code
 shinyServer(function(input, output, session){
 writeLog("Server started")
+updateModifyFields(session_ = session
+  ,fields = c('sample.modify.primarykey', 'run.modify.primarykey','vcffile.modify.primarykey')
+  ,tables=  c('tbl_samples','tbl_run','tbl_files')
+)
 #############
 #Tab samples#
 #############
@@ -22,14 +26,25 @@ registerSample <- observe({
     isolate({
       disableActionButton("registerSample",session)
       writeLog("Button registerSample pressed")
-      writeLog(input$form_sample.studyid)
-      mess <- fncUItoDB('ui_elements/form_sample/'
-        ,db = db
-        ,table = "tbl_samples"
-        ,dat = input
-        ,primarykey.create = T
-        ,check.fields = T
-      )
+      if(input$sample.modify.primarykey == 'NEW RECORD'){
+         mess <- fncUItoDB('ui_elements/form_sample/'
+           ,db = db
+           ,table = "tbl_samples"
+           ,dat = input
+           ,primarykey.create = T
+           ,check.fields = T
+         )
+      }else{
+        mess <- fncUItoDB('ui_elements/form_sample/'
+          ,db = db
+          ,table = 'tbl_samples'
+          ,dat = input
+          ,primarykey.create = F
+          ,check.fields = F
+          ,primarykey.label = 'primarykey'
+          ,primarykey.val = currentSample
+        )
+      }
       if(mess$error == 0 & mess$result) fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
       session$sendCustomMessage(
          type = 'testmessage'
@@ -42,19 +57,34 @@ registerSample <- observe({
 
 #Database management - buttons
 observe({
-  if(input$sample.review.btn != 0) {
+  writeLog(paste("sample.modify.primarykey:",input$sample.modify.primarykey))
+  if(input$sample.modify.primarykey != 'NEW RECORD' & !(is.na(input$sample.modify.primarykey))  & input$sample.modify.primarykey != 'NA'){
     isolate({
-      fncUpdateUI(path = 'ui_elements/form_sample/'
+      writeLog('Zombie attack!!')
+      mess <- fncUpdateUI(path = 'ui_elements/form_sample/'
         ,db=db
         ,table='tbl_samples'
-        ,primarykey.label='primarykey'
-        ,primarykey.value=input$sample.review.primarykey
+        ,primarykey.label='ngsfacilityid'
+        ,primarykey.value=input$sample.modify.primarykey
         ,session = session
-      )      
+      )   
+      tryCatch({
+        assign("currentSample", mess[['primarykey.val']], envir = .GlobalEnv)
+        writeLog(paste("Current sample:",currentSample))
+      }, error = function(e){writeLog(e)})
+    })
+   }else{
+      fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)    
+   }
+  })
+#Database management - buttons
+observe({
+  if(input$sample.modify.btn != 0) {
+    isolate({
+      fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)        
     })
   }
 })
-
 #####################
 #Tab Run information#
 #####################
@@ -87,7 +117,20 @@ registerRun <- observe({
     })
   }
 })
-
+#Database management - buttons
+observe({
+  if(input$run.modify.btn != 0) {
+    isolate({
+      fncUpdateUI(path = 'ui_elements/form_run/'
+        ,db=db
+        ,table='tbl_run'
+        ,primarykey.label='ngsfacilityid'
+        ,primarykey.value=input$run.modify.primarykey
+        ,session = session
+      )      
+    })
+  }
+})
 
 ################
 #Tab VCF uplaod#
@@ -211,7 +254,20 @@ output$coveragefilesuploaded <- renderPrint({
     cat('!No coverage files uploaded yet.\n')
   }
 })
-
+#Database management - buttons
+observe({
+  if(input$vcffile.modify.btn != 0) {
+    isolate({
+      fncUpdateUI(path = 'ui_elements/form_fileupload/'
+        ,db=db
+        ,table='tbl_files'
+        ,primarykey.label='ngsfacilityid'
+        ,primarykey.value=input$vcffile.modify.primarykey
+        ,session = session
+      )      
+    })
+  }
+})
 
 ##########
 #QC Panel#
@@ -253,6 +309,7 @@ output$dataTableTblResearchers <- renderDataTable({
 observe({
   if(input$db.add.researcher != 0){
     isolate({
+      disableActionButton('db.add.researcher', session)
       primarykey.val <- fncCreateUniquePrimarykey(db,"tbl_researchers")
       dbInsertInto(db, "tbl_researchers", "primarykey",  primarykey.val, type = "TEXT", verbose = T)    
       dbInsertInto(db, "tbl_researchers", "username",  input$newresearcher.name, type = "TEXT", where = c("primarykey", primarykey.val))
@@ -262,6 +319,7 @@ observe({
         type = 'testmessage',
         message = "The new researcher has been added." 
       )
+      enableActionButton('db.add.researcher', session)
     }) 
   }
 })
@@ -271,6 +329,7 @@ output$dataTableTblOperators <- renderDataTable({
 observe({
   if(input$db.add.operator != 0){
     isolate({
+      disableActionButton('db.add.operator', session)
       primarykey.val <- fncCreateUniquePrimarykey(db,"tbl_operators")
       dbInsertInto(db, "tbl_operators", "primarykey",  primarykey.val, type = "TEXT", verbose = T)    
       dbInsertInto(db, "tbl_operators", "username",  input$newoperator.name, type = "TEXT", where = c("primarykey", primarykey.val))
@@ -280,6 +339,7 @@ observe({
         type = 'testmessage',
         message = "The new operator has been added." 
       )
+      enableActionButton('db.add.operator', session)
     }) 
   }
 })
@@ -287,12 +347,14 @@ observe({
 observe({
   if(input$deleteRecord != 0) {
     isolate({
+      disableActionButton('deleteRecord', session)
       dbDeleteRecord(db, input$table, "ID", input$deleteID, operator = "=")
       updateTextInput(session,'deleteID','Delete Record by ID',NA)
       session$sendCustomMessage(
         type = 'testmessage',
         message = "You deleted the record." 
       )
+      enableActionButton('deleteRecord', session)
     })
   }
 })

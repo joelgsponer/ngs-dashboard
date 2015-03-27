@@ -9,7 +9,7 @@
 	x <-  dbGetQuery(db, strSQL)
 	return(c(x$username))
 	}",
-"selected" :"James Maxwell",
+"selected" :"Michelangelo",
 "multiple" :false,
 "selectize":true,
 "width"    :null,

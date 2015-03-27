@@ -42,3 +42,35 @@ enableActionButton <- function(id,session) {
                              list(code= paste("$('#",id,"').prop('disabled',false)"
                                     ,sep="")))
 } 
+
+updateModifyFields <- function(session_, fields, tables){
+  tryCatch({
+    r <- function(table){
+      strSQL <- sprintf('SELECT ngsfacilityid FROM %s', table)
+      x <-  dbGetQuery(db, strSQL)
+      return(c(x$ngsfacilityid))
+    }
+  }, error = function(e){
+    return(list(
+      message = 'Error while fetching ngsfacilitzid form table'
+      ,error = 1
+      ,e = e
+      ))
+    })
+  tryCatch({
+    for(field in fields){
+      updateSelectInput(
+         session_
+        ,inputId   = field
+        ,choices   = c('NEW RECORD',r(table = tables[which(fields == field)]))
+        ,selected  = 'NEW RECORD'
+      )
+    }
+  }, error = function(e){
+    return(list(
+       message = 'Error while updating fields with ngsfacilityid'
+      ,error = 1
+      ,e = e
+    ))
+  })
+}
