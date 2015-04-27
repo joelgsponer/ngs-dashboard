@@ -3,7 +3,9 @@ library(shinysky)
 source('setUp.r') 
 
 shinyUI(fluidPage(
-  includeCSS("www/custom.css"),
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+  ),
   singleton(tags$head(tags$script(src = "message-handler.js"))),
   tags$head(tags$script(HTML('
       Shiny.addCustomMessageHandler("jsCode",
@@ -19,31 +21,17 @@ shinyUI(fluidPage(
   sidebarPanel(
 	  conditionalPanel(
 	 	  condition = "input.navigation==1"      
-        ,HTML("<h4>Click here to register your sample:</h4>")
-        ,actionButton("registerSample", "Register sample"), helpText("Record will only show after clicking on refresh in your browser")
-        ,selectInput("sample.modify.primarykey", "Select sample to modifiy", NA)
-        ,actionButton("sample.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")	  
+        ,selectInput("sample.modify.primarykey", "Select sample to modifiy, leave 'NEW SAMPLE' for new registration.", NA)
     )
 	  ,conditionalPanel(
       condition = "input.navigation==2"
-        ,HTML("<h4>Click here to register your run:</h4>")
-        ,actionButton("registerRun", "Register run"), helpText("Record will only show after clicking on refresh in your browser")
         ,selectInput("run.modify.primarykey", "Select sample to modifiy", NA)
-        ,actionButton("run.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")     	  
     )
 	  ,conditionalPanel(
       condition = "input.navigation==3" 
-        ,HTML("<font color='red'>Please note, files with the same filename can only be uploaded once - please change the filename if necessary!</font><br><br>") 
-        ,fileInput("vcffiles", "VCF file to upload:", multiple = F)
-        ,helpText("Please choose the VCF files to upload")
         ,verbatimTextOutput("vcffilesuploaded")
-        ,fileInput("coveragefiles", "Coverage file to upload:", multiple = F)
-        ,helpText("Please choose the coverage files to upload")
         ,verbatimTextOutput("coveragefilesuploaded")
-        ,actionButton("uploadfiles", "Upload")
-        ,helpText("Changes to the database will only show after clicking on refresh in your browser")
         ,selectInput("vcffile.modify.primarykey", "Select sample to modifiy", NA)
-        ,actionButton("vcffile.modify.btn", "Modify")#, helpText("Record will only show after clicking on refresh in your browser")     
     )
     ,conditionalPanel(
       condition = "input.navigation==4"          
@@ -65,16 +53,42 @@ shinyUI(fluidPage(
   mainPanel(
     tabsetPanel( 
        tabPanel("1. Register sample"
+        ,HTML('<br><h4>To be filled out by the researcher.</h4>')
+        ,HTML('<h3>1.</h3>')
         ,uiOutput("form_sample")
         ,helpText("Please dont't forget to save in the Database tab.")
+        ,HTML('<h3>2.</h3>')
+        ,HTML("<h4>Click here to register your sample:</h4>")
+        ,actionButton("registerSample", "Save")
+        ,HTML("<font color='red'>Wait for the success Pop-up, else all your input will be lost!</font><br><br>") 
+        ,helpText("Records will only show up in the database after clicking on refresh in your browser")
         ,value = 1
       )		
       ,tabPanel("2. Run information"
+        ,HTML('<br><h4>To be filled out by the operator.</h4>')
+        ,HTML('<h3>1.</h3>')
         ,uiOutput("form_run")
+        ,HTML("<h4>Click here to register your run:</h4>")
+        ,HTML('<h3>2.</h3>')
+        ,actionButton("registerRun", "Save")
+        ,HTML("<font color='red'>Wait for the success Pop-up, else all your input will be lost!</font><br><br>") 
+        ,helpText("Records will only show up in the database after clicking on refresh in your browser")
         ,value = 2
       )
       ,tabPanel("3. File upload"
+        ,HTML('<br><h4>To be filled out by the operator.</h4>')
+        ,HTML("<font color='red'>Please note, files with the same filename can only be uploaded once - please change the filename if necessary!</font><br>") 
+        ,HTML('<h3>1.</h3>')
+        ,fileInput("vcffiles", "VCF file to upload:", multiple = F)
+        ,helpText("Please choose the VCF files to upload")
+        ,HTML('<h3>2.</h3>')
+        ,fileInput("coveragefiles", "Coverage file to upload:", multiple = F)
+        ,helpText("Please choose the coverage files to upload")
+        ,HTML('<h3>3.</h3>')
         ,uiOutput("form_fileupload")
+        ,actionButton("uploadfiles", "Save")
+        ,HTML("<font color='red'>Wait for the success Pop-up, else all your input will be lost!</font><br><br>") 
+        ,helpText("Records will only show up in the database after clicking on refresh in your browser")
         ,value = 3
       )
       ,tabPanel("Realtime QC"
@@ -99,6 +113,8 @@ shinyUI(fluidPage(
         ,value = 5
       )
       ,tabPanel("Help"
+        ,HTML(readLines('README.md'))
+        ,h4('Debug console:')
         ,verbatimTextOutput("log.verbose")
         ,value = 6
       )

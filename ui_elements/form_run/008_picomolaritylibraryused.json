@@ -1,0 +1,11 @@
+{
+"type"     :"numericInput",
+"inputId"  :"pmused",
+"label"    :"Library | pM used",
+"help text":"(required)",
+"value"    :null,
+"min"      :null,
+"max"      :null,
+"step"     :null,
+"optional" :false
+}

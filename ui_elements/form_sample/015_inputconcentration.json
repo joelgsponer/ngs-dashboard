@@ -1,8 +1,8 @@
 {
 "type"     :"numericInput",
-"inputId"  :"studyid",
-"label"    :"Study ID",
-"help text":"Please indicate the study ID. (optional)",
+"inputId"  :"inputconcentration",
+"label"    :"Concentration of input DNA in ng/ul",
+"help text":"(optional)",
 "value"    :null,
 "min"      :null,
 "max"      :null,

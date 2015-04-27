@@ -1,0 +1,16 @@
+{
+"type":"textInput",
+"inputId":"ngsfacilityid",
+"label":"NGS facility sample ID",
+"help text":"IMPORTANT! Only change this value if advised by the NGS facility. Leave blank if you selected a previous sample. (required)",
+"value":"function(db){
+	strSQL <- 'SELECT ID
+	  FROM   tbl_samples'
+	x <-  dbGetQuery(db, strSQL)
+	x <- c(x$ID)
+	x <- as.numeric(x)
+	x <- max(x, na.rm = T) + 1
+	return(paste('NGS-',Sys.Date(),'-',x, sep = ""))
+	}",
+"optional":false
+}

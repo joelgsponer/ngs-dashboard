@@ -2,7 +2,7 @@
 "type"     :"selectInput",
 "inputId"  :"researcher",
 "label"    :"Researcher",
-"help text":"Please select your name.",
+"help text":"Please select your name. If your not yet registered please talk to your NGS responsible. (required)",
 "choices"  :"function(db){
 	strSQL <- 'SELECT username
                FROM   tbl_researchers'

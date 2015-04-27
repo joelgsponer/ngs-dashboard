@@ -1,0 +1,11 @@
+{
+"type"     :"numericInput",
+"inputId"  :"pmobtained",
+"label"    :"Library | pM obtained",
+"help text":"(required)",
+"value"    :null,
+"min"      :null,
+"max"      :null,
+"step"     :null,
+"optional" :false
+}

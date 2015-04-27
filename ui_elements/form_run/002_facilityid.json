@@ -2,7 +2,7 @@
 "type"     :"selectInput",
 "inputId"  :"ngsfacilityid",
 "label"    :"NGS facility ID",
-"help text":"Please select your name.",
+"help text":"Please select appropriate NGS facility ID. Only samples that have no run associated with them yet will be possible to select. Leave blank if you selected a previous sample.  (required)",
 "choices"  :"function(db){
 	strSQL <- 'SELECT ngsfacilityid
                FROM   tbl_samples
@@ -15,5 +15,5 @@
 "multiple" :false,
 "selectize":true,
 "width"    :null,
-"optional" :false
+"optional" :true
 }

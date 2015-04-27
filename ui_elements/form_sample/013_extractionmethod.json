@@ -1,0 +1,12 @@
+{
+"type"     :"selectInput",
+"inputId"  :"extractionmethod",
+"label"    :"Method of DNA extraction",
+"help text":"Please select your name.",
+"choices"  :["Maxwell","Qiagen collumns", "Phenol–chloroform", "Other"],
+"selected" :"Other",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :true
+}

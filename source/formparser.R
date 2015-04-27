@@ -182,7 +182,7 @@ fncUItoDB <- function(path
   return(list(
      primarykey.label = primarykey.label
     ,primarykey.val   = primarykey.val
-    ,message          = "You successfully created a new record."
+    ,message          = ifelse(update==T,"You successfully updated the record.","You successfully created a new record.")
     ,error            = 0
     ,result = TRUE
   ))
@@ -350,7 +350,6 @@ fncUpdateUI <- function(path
                         selectInput   = updateSelectInput(
                           session
                           ,inputId   = paste(form,UIelement.definition$inputId, sep = ".")
-                          ,choices   = as.character(r[,UIelement.definition$inputId])
                           ,selected  = as.character(r[1,UIelement.definition$inputId])
                         )
                         ,numericInput = updateNumericInput(

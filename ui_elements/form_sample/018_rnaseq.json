@@ -1,0 +1,8 @@
+{
+"type":"checkboxInput",
+"inputId":"rnaseq",
+"label":"Is this sample for RNA sequencing? (optional)",
+"help text":"",
+"value":false,
+"optional":true
+}

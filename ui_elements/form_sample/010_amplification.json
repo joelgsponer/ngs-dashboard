@@ -1,0 +1,13 @@
+
+{
+"type"     :"selectInput",
+"inputId"  :"amplification",
+"label"    :"Amplification",
+"help text":"Please please specify if a DNA step amplification was applied and if yes what kind of. (optinal)",
+"choices"  :["none","Whole genome amplification", "Region specific amplification"],
+"selected" :"none",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :true
+}

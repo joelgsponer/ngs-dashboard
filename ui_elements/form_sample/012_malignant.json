@@ -1,0 +1,12 @@
+{
+"type"     :"selectInput",
+"inputId"  :"malingnancy",
+"label"    :"Malingnancy",
+"help text":"Plese provide addional information about the specimen. (optional)",
+"choices"  :["Malignant tumor","Normal control", "Benign tumor", "Germline", "Other"],
+"selected" :"Other",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :true
+}

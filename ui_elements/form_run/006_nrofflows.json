@@ -1,0 +1,11 @@
+{
+"type"     :"numericInput",
+"inputId"  :"nrofflows",
+"label"    :"Number of flows.",
+"help text":"(required)",
+"value"    :null,
+"min"      :null,
+"max"      :null,
+"step"     :null,
+"optional" :false
+}

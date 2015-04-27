@@ -27,6 +27,7 @@ registerSample <- observe({
       disableActionButton("registerSample",session)
       writeLog("Button registerSample pressed")
       if(input$sample.modify.primarykey == 'NEW RECORD'){
+         #if(dbMatchingRecord(db, tbl_samples, field = "ngsfacilityid", value = input$) == F)
          mess <- fncUItoDB('ui_elements/form_sample/'
            ,db = db
            ,table = "tbl_samples"
@@ -48,19 +49,18 @@ registerSample <- observe({
       if(mess$error == 0 & mess$result) fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
       session$sendCustomMessage(
          type = 'testmessage'
-        ,message = mess
+        ,message = mess$message
       )
       enableActionButton("registerSample",session)
     })
   }
 })
 
-#Database management - buttons
+#Database management - dropdown
 observe({
   writeLog(paste("sample.modify.primarykey:",input$sample.modify.primarykey))
   if(input$sample.modify.primarykey != 'NEW RECORD' & !(is.na(input$sample.modify.primarykey))  & input$sample.modify.primarykey != 'NA'){
     isolate({
-      writeLog('Zombie attack!!')
       mess <- fncUpdateUI(path = 'ui_elements/form_sample/'
         ,db=db
         ,table='tbl_samples'
@@ -77,14 +77,7 @@ observe({
       fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)    
    }
   })
-#Database management - buttons
-observe({
-  if(input$sample.modify.btn != 0) {
-    isolate({
-      fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)        
-    })
-  }
-})
+
 #####################
 #Tab Run information#
 #####################
@@ -98,7 +91,6 @@ registerRun <- observe({
   if(input$registerRun != 0) {
     isolate({
       disableActionButton("registerRun",session)
-      session$sendCustomMessage(type='testmessage',message=paste("SELECT primarykey FROM tbl_samples WHERE ngsfacilityid ='",input$form_run.ngsfacilityid,"'", sep = ""))
       writeLog("Button registerRun pressed")
       mess <- fncUItoDB('ui_elements/form_run/'
         ,db = db
@@ -111,26 +103,34 @@ registerRun <- observe({
       if(mess$error == 0 & mess$result)fncResetUI(session = session,db = db,'ui_elements/form_run/', verbose = T)
       session$sendCustomMessage(
         type = 'testmessage',
-        message = mess
+        message = mess$message
       )
       enableActionButton("registerRun",session)
     })
   }
 })
-#Database management - buttons
+
+#Database management - dropdown
 observe({
-  if(input$run.modify.btn != 0) {
+  writeLog(paste("run.modify.primarykey:",input$run.modify.primarykey))
+  if(input$run.modify.primarykey != 'NEW RECORD' & !(is.na(input$run.modify.primarykey))  & input$run.modify.primarykey != 'NA'){
     isolate({
-      fncUpdateUI(path = 'ui_elements/form_run/'
+      mess <- fncUpdateUI(path = 'ui_elements/form_run/'
         ,db=db
         ,table='tbl_run'
         ,primarykey.label='ngsfacilityid'
         ,primarykey.value=input$run.modify.primarykey
         ,session = session
-      )      
+      )   
+      tryCatch({
+        assign("currentSample", mess[['primarykey.val']], envir = .GlobalEnv)
+        writeLog(paste("Current sample:",currentSample))
+      }, error = function(e){writeLog(e)})
     })
-  }
-})
+   }else{
+      fncCreateUI('ui_elements/form_run/',db = db,verbose = T)    
+   }
+  })
 
 ################
 #Tab VCF uplaod#
@@ -191,7 +191,7 @@ observe({
           if(mess$error == 0 & mess$result) fncResetUI(session,'ui_elements/form_fileupload/', db = db,verbose = T)
               session$sendCustomMessage(
                 type = 'testmessage',
-                message = "SUCCESS:  You succesfully uploaded your files"
+                message = "You succesfully uploaded your files"
             )
           }else{
             if(dbMatchingRecord(db, "tbl_files", vcffile$name, "vcffile", verbose = F)) x <- "VCF"
@@ -254,20 +254,28 @@ output$coveragefilesuploaded <- renderPrint({
     cat('!No coverage files uploaded yet.\n')
   }
 })
-#Database management - buttons
+
+#Database management - dropdown
 observe({
-  if(input$vcffile.modify.btn != 0) {
+  writeLog(paste("vcffile.modify.primarykey:",input$vcffile.modify.primarykey))
+  if(input$vcffile.modify.primarykey != 'NEW RECORD' & !(is.na(input$vcffile.modify.primarykey))  & input$vcffile.modify.primarykey != 'NA'){
     isolate({
-      fncUpdateUI(path = 'ui_elements/form_fileupload/'
+      mess <- fncUpdateUI(path = 'ui_elements/form_fileupload/'
         ,db=db
         ,table='tbl_files'
         ,primarykey.label='ngsfacilityid'
         ,primarykey.value=input$vcffile.modify.primarykey
         ,session = session
-      )      
+      )   
+      tryCatch({
+        assign("currentSample", mess[['primarykey.val']], envir = .GlobalEnv)
+        writeLog(paste("Current sample:",currentSample))
+      }, error = function(e){writeLog(e)})
     })
-  }
-})
+   }else{
+      fncCreateUI('ui_elements/form_fileupload/',db = db,verbose = T)    
+   }
+  })
 
 ##########
 #QC Panel#

@@ -1,0 +1,8 @@
+{
+"type":"checkboxInput",
+"inputId":"zymo",
+"label":"Was the sample Zymo purified. (optional)",
+"help text":"",
+"value":false,
+"optional":true
+}

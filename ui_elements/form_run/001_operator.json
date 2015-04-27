@@ -2,14 +2,14 @@
 "type"     :"selectInput",
 "inputId"  :"operator",
 "label"    :"Operator",
-"help text":"Please select your name.",
+"help text":"(required)",
 "choices"  :"function(db){
 	strSQL <- 'SELECT username
                FROM   tbl_operators'
 	x <-  dbGetQuery(db, strSQL)
 	return(c(x$username))
 	}",
-"selected" :"James Maxwell",
+"selected" :"",
 "multiple" :false,
 "selectize":true,
 "width"    :null,

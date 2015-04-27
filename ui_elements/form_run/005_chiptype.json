@@ -1,0 +1,12 @@
+{
+"type"     :"selectInput",
+"inputId"  :"chiptype",
+"label"    :"Chip type",
+"help text":"Please select the used chip. (required)",
+"choices" :["314","316","318", "p2"],
+"selected" :"314",
+"multiple" :false,
+"selectize":true,
+"width"    :null,
+"optional" :false
+}

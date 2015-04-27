@@ -48,7 +48,7 @@ updateModifyFields <- function(session_, fields, tables){
     r <- function(table){
       strSQL <- sprintf('SELECT ngsfacilityid FROM %s', table)
       x <-  dbGetQuery(db, strSQL)
-      return(c(x$ngsfacilityid))
+      return(rev(c(x$ngsfacilityid)))
     }
   }, error = function(e){
     return(list(
