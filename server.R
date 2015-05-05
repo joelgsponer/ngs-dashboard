@@ -380,14 +380,22 @@ observe({
         ,is.silent = T #it T supresses raising of errors, istead return a list with error information.
         ,function.id = "btn.createBackup" #Use this to identfy the function in error (or success messages if applicable) messages.
         ,verbose = T #Turn messages on and off
-        ,debug = F
+        ,debug = T
       )
       sink()
       writeLog(mess$message)
-      session$sendCustomMessage(
-        type = 'testmessage',
-        message = "You succesfully crated a Backup." 
-      )
+      if(mess$error == 1){
+       writeLog(mess$e)
+       session$sendCustomMessage(
+          type = 'testmessage',
+          message = mess
+       )
+      }else{
+        session$sendCustomMessage(
+          type = 'testmessage',
+          message = "You succesfully crated a Backup." 
+        )
+      }
       enableActionButton('createBackup', session)
     })
   }
