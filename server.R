@@ -5,18 +5,6 @@ library(shiny)
 library(shinysky)
 source('setUp.r')
 
-#create a backup
-waRRior.snippets.backup_file(
-   file = "data/ngs.sqlite"
-  ,destination = paste(getwd(),config_DBBACKUPSTORAGE, sep = "/")
-  ,identifier = "ngs"
-  ,max.backup.files = config_MAXBACKUPFILES
-  ,create.folders = T
-  ,is.silent = T #it T supresses raising of errors, istead return a list with error information.
-  ,function.id = "waRRior.snippets.backup_file" #Use this to identfy the function in error (or success messages if applicable) messages.
-  ,verbose = T #Turn messages on and off
-  ,debug = F
-  )
 
 #This is the server code
 shinyServer(function(input, output, session){
@@ -123,7 +111,6 @@ registerRun <- observe({
   }
 })
 
-#Database management - dropdown
 observe({
   writeLog(paste("run.modify.primarykey:",input$run.modify.primarykey))
   if(input$run.modify.primarykey != 'NEW RECORD' & !(is.na(input$run.modify.primarykey))  & input$run.modify.primarykey != 'NA'){
@@ -238,7 +225,7 @@ vcffilesuploaded <- reactive({
     return(input$vcffiles[,1])
   }
 })
-#Print upladed files
+#Print uploaded files
 output$vcffilesuploaded <- renderPrint({
   statusUpload <- vcffilesuploaded()
   cat("#Uploaded VCF files:\n ")
@@ -257,7 +244,7 @@ coveragefilesuploaded <- reactive({
     return(input$coveragefiles[,1])
   }
 })
-#Print upladed files
+#Print uploaded files
 output$coveragefilesuploaded <- renderPrint({
   statusUpload <- coveragefilesuploaded()
   cat("#Uploaded coverage files:\n ")
@@ -379,6 +366,31 @@ observe({
     })
   }
 })
+observe({
+  if(input$createBackup != 0) {
+    isolate({
+      disableActionButton('createBackup', session)
+      mess <- waRRior.snippets.backup_file(
+        file = "data/ngs.sqlite"
+        ,destination = paste(getwd(),config_DBBACKUPSTORAGE, sep = "/")
+        ,identifier = "ngs"
+        ,max.backup.files = config_MAXBACKUPFILES
+        ,create.folders = T
+        ,is.silent = T #it T supresses raising of errors, istead return a list with error information.
+        ,function.id = "btn.createBackup" #Use this to identfy the function in error (or success messages if applicable) messages.
+        ,verbose = T #Turn messages on and off
+        ,debug = F
+      )
+      writeLog(mess)
+      session$sendCustomMessage(
+        type = 'testmessage',
+        message = "You succesfully crated a Backup." 
+      )
+      enableActionButton('createBackup', session)
+    })
+  }
+})
+
 ##########
 #Tab help#
 ##########
