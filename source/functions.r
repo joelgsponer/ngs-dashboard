@@ -7,6 +7,9 @@ fncCopyFiles <- function(files, where){
   }
 }
 
+
+
+
 writeLog <- function(message){
   message <- paste("[",Sys.time(),"]",message,"\n", log.debug, sep = "")
   assign("log.debug",message, envir = .GlobalEnv)

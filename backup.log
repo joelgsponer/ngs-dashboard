@@ -1,0 +1,22 @@
+waRRior: backing up file data/ngs.sqlite to /var/shiny-server/www/webCGH/apps/ngs/data/backupdb/ 
+waRRior: files in backup location matching the identifier
+	* 2015-05-05_14_27_46_ngs.sqlite 
+	* 2015-05-05_14_27_56_ngs.sqlite 
+	* 2015-05-05_14_27_59_ngs.sqlite 
+	* 2015-05-05_14_28_08_ngs.sqlite 
+	* 2015-05-05_14_28_10_ngs.sqlite 
+	* 2015-05-05_14_28_12_ngs.sqlite 
+	* 2015-05-05_14_28_14_ngs.sqlite 
+	* 2015-05-05_14_28_16_ngs.sqlite 
+	* 2015-05-05_14_28_18_ngs.sqlite 
+	* 2015-05-05_14_28_34_ngs.sqlite 
+waRRior: total number of files 10 
+waRRior: deleting previous backup file 2015-05-05_14_27_46_ngs.sqlite due to max.backup.files restriction (max files: 10 
+[1] TRUE
+[1] "2015-05-05_14_28_49_ngs"
+[1] "data/ngs.sqlite"
+[1] "sqlite"
+[1] "2015-05-05_14_28_49_ngs.sqlite"
+waRRior: creating backup /var/shiny-server/www/webCGH/apps/ngs/data/backupdb//2015-05-05_14_28_49_ngs.sqlite 
+[1] TRUE
+waRRior: btn.createBackup success

@@ -24,6 +24,7 @@ checkPkg('doParallel')
 checkPkg('plyr')
 checkPkg('random')
 checkPkg('rmarkdown')
+checkPkg('gridExtra')
 
 require('RJSONIO')
 require('dplyr')
@@ -41,6 +42,7 @@ require('plyr')
 require('random')
 require('shinysky')
 require('rmarkdown')
+require('gridExtra')
 
 
 

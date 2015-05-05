@@ -43,6 +43,7 @@ shinyUI(fluidPage(
         ,textInput("deleteID", "Delete Record by ID", NA)
         ,actionButton("deleteRecord", "Delete Record"), helpText("Record will only show as deleted after clicking on refresh in your browser")
         ,actionButton("createBackup", "Backup database"), helpText("Click here to create a backup of the database")
+        ,HTML('<br><h4>Quick report</h4>')
         ,radioButtons('format', 'Document format', c('PDF', 'HTML', 'Word'),inline = TRUE)
         ,downloadButton('downloadReport')
     )  

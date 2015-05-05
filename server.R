@@ -401,6 +401,44 @@ observe({
   }
 })
 
+samples.no.files <- reactive({
+    strSQL <- 'SELECT *
+               FROM   tbl_run
+               WHERE  ngsfacilityid NOT IN (SELECT ngsfacilityid
+                                            FROM tbl_files)'
+    x <-  dbGetQuery(db, strSQL)
+    if(dim(x)[1] != 0){
+      #x <- data.frame(
+      #   'NGS Facility ID' = x$ngsfacilityid
+      #  ,'Operator' = x$operator
+      #  ,'Date of run' = x$dateofrun
+      # )
+      return(x)
+    }else{
+      return('No samples')
+    }
+})
+samples.no.run <- reactive({
+    strSQL <- 'SELECT *
+               FROM   tbl_samples
+               WHERE  ngsfacilityid NOT IN (SELECT ngsfacilityid
+                                            FROM tbl_run)'
+    x <-  dbGetQuery(db, strSQL)
+    if(dim(x)[1]!= 0){
+      x <- data.frame(
+       'NGS Facility ID' = x$ngsfacilityid
+       ,'Purpose' = x$diagnostics
+       ,'Researcher' = x$researcher
+       ,'B-Number' = x$bnumber
+       ,'Researcher ID' = x$researchersampleid
+       ,'Timestamp' = format(x$timestamp)
+      )
+      return(x)
+    }else{
+      return('No samples')
+    }
+})
+
 output$downloadReport <- downloadHandler(
     filename = function() {
       paste(paste('NGS-samples-open',gsub("[:]"," ",format(Sys.time())), sep = ' '),
