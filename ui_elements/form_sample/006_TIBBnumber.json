@@ -1,8 +1,0 @@
-{
-"type":"textInput",
-"inputId":"tibbnumber",
-"label":"TiBB sample ID",
-"help text":"Please indicate the biobank ID (optional)",
-"value":null,
-"optional":true
-}
