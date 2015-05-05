@@ -5,6 +5,19 @@ library(shiny)
 library(shinysky)
 source('setUp.r')
 
+#create a backup
+waRRior.snippets.backup_file(
+   file = "data/ngs.sqlite"
+  ,destination = paste(getwd(),config_DBBACKUPSTORAGE, sep = "/")
+  ,identifier = "ngs"
+  ,max.backup.files = config_MAXBACKUPFILES
+  ,create.folders = T
+  ,is.silent = T #it T supresses raising of errors, istead return a list with error information.
+  ,function.id = "waRRior.snippets.backup_file" #Use this to identfy the function in error (or success messages if applicable) messages.
+  ,verbose = T #Turn messages on and off
+  ,debug = F
+  )
+
 #This is the server code
 shinyServer(function(input, output, session){
 writeLog("Server started")
@@ -155,13 +168,13 @@ observe({
             "VCF upload\n",
             "Name:", vcffile[,"name"],"\n",
             "Path:", vcffile[,"datapath"],"\n",
-            "Destination:",paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = ""),"\n"
+            "Destination:",paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = "/"),"\n"
             ))
           writeLog(paste(
             "Coverage file upload\n",
             "Name:", coveragefile[,"name"],"\n",
             "Path:", coveragefile[,"datapath"],"\n",
-            "Destination:",paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = ""),"\n"
+            "Destination:",paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = "/"),"\n"
             ))
 
           dbAddField(db, "tbl_files", field = "vcffile", type = "TEXT")
@@ -170,8 +183,8 @@ observe({
           if(  !(dbMatchingRecord(db, "tbl_files", vcffile$name, "vcffile", verbose = F))
              & !(dbMatchingRecord(db, "tbl_files", coveragefile$name, "coveragefile", verbose = F))
             ){
-            file.copy(vcffile$datapath, paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = ""))
-            file.copy(coveragefile[,"datapath"], paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = ""))
+            file.copy(vcffile$datapath, paste(getwd(),config_VCFSTORAGE,vcffile[,"name"], sep = "/"))
+            file.copy(coveragefile[,"datapath"], paste(getwd(),config_COVERAGESTORAGE,coveragefile[,"name"], sep = "/"))
             #cmd <- paste('echo "vcf analysis"')
             #print(cmd)
             #system(cmd, wait = F)
