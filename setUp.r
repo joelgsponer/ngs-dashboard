@@ -23,6 +23,7 @@ checkPkg('zoo')
 checkPkg('doParallel')
 checkPkg('plyr')
 checkPkg('random')
+checkPkg('rmarkdown')
 
 require('RJSONIO')
 require('dplyr')
@@ -39,6 +40,7 @@ require('doParallel')
 require('plyr')
 require('random')
 require('shinysky')
+require('rmarkdown')
 
 
 
