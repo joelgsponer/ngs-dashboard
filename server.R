@@ -393,7 +393,7 @@ observe({
       }else{
         session$sendCustomMessage(
           type = 'testmessage',
-          message = "You succesfully crated a Backup." 
+          message = "You succesfully created a Backup." 
         )
       }
       enableActionButton('createBackup', session)
