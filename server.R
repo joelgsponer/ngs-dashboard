@@ -370,6 +370,7 @@ observe({
   if(input$createBackup != 0) {
     isolate({
       disableActionButton('createBackup', session)
+      sink(config_BACKUPLOG)
       mess <- waRRior.snippets.backup_file(
         file = "data/ngs.sqlite"
         ,destination = paste(getwd(),config_DBBACKUPSTORAGE, sep = "/")
@@ -381,7 +382,8 @@ observe({
         ,verbose = T #Turn messages on and off
         ,debug = F
       )
-      writeLog(mess)
+      sink()
+      writeLog(mess$message)
       session$sendCustomMessage(
         type = 'testmessage',
         message = "You succesfully crated a Backup." 

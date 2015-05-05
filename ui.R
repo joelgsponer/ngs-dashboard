@@ -42,6 +42,7 @@ shinyUI(fluidPage(
         ,selectInput("table", "Select the table you want to modifiy", c("---","tbl_samples", "tbl_run", "tbl_files", "tbl_researchers","tbl_operators"))          
         ,textInput("deleteID", "Delete Record by ID", NA)
         ,actionButton("deleteRecord", "Delete Record"), helpText("Record will only show as deleted after clicking on refresh in your browser")
+        ,actionButton("createBackup", "Backup database"), helpText("Click here to create a backup of the database")
     )  
     ,conditionalPanel(
       condition = "input.navigation==6"          
