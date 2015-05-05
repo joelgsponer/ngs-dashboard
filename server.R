@@ -403,14 +403,12 @@ observe({
 
 output$downloadReport <- downloadHandler(
     filename = function() {
-      paste('NGS-samples-open',gsub("[:]"," ",format(Sys.time())), sep = ' ',
-
+      paste(paste('NGS-samples-open',gsub("[:]"," ",format(Sys.time())), sep = ' '),
         switch(
           input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
         )
-      )
+       , sep =".")
     },
-
     content = function(file) {
       src <- normalizePath('report.Rmd')
 
@@ -420,7 +418,6 @@ output$downloadReport <- downloadHandler(
       on.exit(setwd(owd))
       file.copy(src, 'report.Rmd')
 
-      require(rmarkdown)
       out <- render('report.Rmd', switch(
         input$format,
         PDF = pdf_document(), HTML = html_document(), Word = word_document()
