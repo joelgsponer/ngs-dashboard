@@ -1,8 +1,0 @@
-{
-"type":"checkboxInput",
-"inputId":"sorted",
-"label":"Sorted",
-"help text":"Was the sample sorted. (optional)",
-"value":false,
-"optional":true
-}
