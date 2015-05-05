@@ -1,8 +1,0 @@
-{
-"type":"textInput",
-"inputId":"ngsfacilityid",
-"label":"NGS facility sample ID",
-"help text":"IMPORTANT! Only change this value if advised by the NGS facility. (required)",
-"value":"function(...){return(paste('do_not_loose_the_sample-',Sys.Date(), sep = ""))}",
-"optional":false
-}
