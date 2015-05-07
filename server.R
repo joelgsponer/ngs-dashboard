@@ -355,14 +355,21 @@ observe({
 observe({
   if(input$deleteRecord != 0) {
     isolate({
-      disableActionButton('deleteRecord', session)
-      dbDeleteRecord(db, input$table, "ID", input$deleteID, operator = "=")
-      updateTextInput(session,'deleteID','Delete Record by ID',NA)
-      session$sendCustomMessage(
-        type = 'testmessage',
-        message = "You deleted the record." 
-      )
-      enableActionButton('deleteRecord', session)
+      if(input$table == "---"){
+        session$sendCustomMessage(
+          type = 'testmessage',
+          message = "Please select a table first." 
+        )
+      }else{
+        disableActionButton('deleteRecord', session)
+        dbDeleteRecord(db, input$table, "ID", input$deleteID, operator = "=")
+        updateTextInput(session,'deleteID','Delete Record by ID',NA)
+        session$sendCustomMessage(
+          type = 'testmessage',
+          message = "You deleted the record." 
+        )
+        enableActionButton('deleteRecord', session)
+      }
     })
   }
 })
