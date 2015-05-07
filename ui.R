@@ -4,7 +4,7 @@ source('setUp.r')
 
 shinyUI(fluidPage(
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+    tags$link(rel = "stylesheet", type = "text/css", href = "https://raw.githubusercontent.com/joelgsponer/PathoLab/master/css/patholab.min.css")
   ),
   singleton(tags$head(tags$script(src = "message-handler.js"))),
   tags$head(tags$script(HTML('
