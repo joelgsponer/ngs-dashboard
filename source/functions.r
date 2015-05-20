@@ -2,26 +2,26 @@ setClass("individual",
   ,slots = c(
      name       = "character"
     ,chr        = "list"
-    ,last.score = "numeric"
+    ,score      = "numeric"
   )
 ) 
 
 setMethod("show", "individual", function(object){
   cat("--- Individual ---\n")
-  cat("Name:\t",object@name,"\n")
+  cat("Name : ",object@name,"\n")
   cat("---\n")
   for(i in seq(1,length(object@chr))){
-    cat(names(object@chr)[i],":\t",object@chr[[i]], "\n")
+    cat(names(object@chr)[i],": ",object@chr[[i]], "\n")
   }
   cat("---\n")
-  cat("Last score:\t",object@last.score,"\n")
+  cat("Score : ",object@score,"\n")
   cat("---\n")
 })
 
 create.individual <- function(
    name = character(0)
   ,chr
-  ,last.score = numeric(0) 
+  ,score = numeric(0) 
   ,create.random.name = F
 ){
   newIndividual <- new("individual")
@@ -31,7 +31,7 @@ create.individual <- function(
   }
   newIndividual@name <- name
   newIndividual@chr <- chr
-  newIndividual@last.score <- last.score  
+  newIndividual@score <- score  
   return(newIndividual)
 }
 
@@ -213,8 +213,10 @@ for(i in seq(1, population.size)){
 
 for(i in seq(1, population.size)){
   s <- evaluate(population[[i]], test.data)
-  population[[i]]@last.score <- s
+  population[[i]]@score <- s
 }
+
+
 
 #Run
 
