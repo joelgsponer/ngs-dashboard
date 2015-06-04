@@ -7,13 +7,12 @@ Date: `r format(Sys.time())`
 These samples have no associated run yet.
 
 ```{r, echo =FALSE, message = FALSE, warning=FALSE}
-require(gridExtra)
-grid.table(samples.no.run())
+require(knitr)
+print(kable(samples.no.run()))
 ```
-
 ###No files yet
 These samples have no associated files yet.
 
 ```{r, echo =FALSE, message = FALSE, warning=FALSE}
-grid.table(samples.no.files())
+print(kable(samples.no.files()))
 ```

@@ -305,12 +305,37 @@ Bar <- gvisAreaChart(df
 output$dataTableTblSamples <- renderDataTable({
   if(input$show_tbl_samples == T) dbGetRecords(db, "tbl_samples")
 })
+output$downloadTableTblSamples <- downloadHandler(
+    filename = function() {
+      paste(paste('NGS_table_samples_',gsub("[:]"," ",format(Sys.time(), format = "%y-%m-%d")),".csv",sep =""))
+    },
+    content = function(file) {
+      write.csv(dbGetRecords(db, "tbl_samples"), file)
+    }
+  )
+
 output$dataTableTblRun <- renderDataTable({
   if(input$show_tbl_run == T) dbGetRecords(db, "tbl_run")
 })
+output$downloadTableTblRun <- downloadHandler(
+    filename = function() {
+      paste(paste('NGS_table_run_',gsub("[:]"," ",format(Sys.time(), format = "%y-%m-%d")),".csv",sep =""))
+    },
+    content = function(file) {
+      write.csv(dbGetRecords(db, "tbl_run"), file)
+    }
+  )
 output$dataTableTblVCF <- renderDataTable({
   if(input$show_tbl_files == T) dbGetRecords(db, "tbl_files")
 })
+output$downloadTableTblVCF <- downloadHandler(
+    filename = function() {
+      paste(paste('NGS_table_files_',gsub("[:]"," ",format(Sys.time(), format = "%y-%m-%d")),".csv",sep =""))
+    },
+    content = function(file) {
+      write.csv(dbGetRecords(db, "tbl_files"), file)
+    }
+  )
 output$dataTableTblResearchers <- renderDataTable({
   if(input$show_tbl_researchers == T) dbGetRecords(db, "tbl_researchers")
 })
@@ -415,11 +440,11 @@ samples.no.files <- reactive({
                                             FROM tbl_files)'
     x <-  dbGetQuery(db, strSQL)
     if(dim(x)[1] != 0){
-      #x <- data.frame(
-      #   'NGS Facility ID' = x$ngsfacilityid
-      #  ,'Operator' = x$operator
-      #  ,'Date of run' = x$dateofrun
-      # )
+      x <- data.frame(
+        'NGS Facility ID' = x$ngsfacilityid
+        ,'Operator' = x$operator
+        ,'Date of run' = format(as.Date(x$dateofrun), format = "%Y-%m-%d")
+      )
       return(x)
     }else{
       return('No samples')
@@ -433,12 +458,11 @@ samples.no.run <- reactive({
     x <-  dbGetQuery(db, strSQL)
     if(dim(x)[1]!= 0){
       x <- data.frame(
-       'NGS Facility ID' = x$ngsfacilityid
+        'NGS Facility ID' = x$ngsfacilityid
        ,'Purpose' = x$diagnostics
        ,'Researcher' = x$researcher
-       ,'B-Number' = x$bnumber
        ,'Researcher ID' = x$researchersampleid
-       ,'Timestamp' = format(x$timestamp)
+       ,'Timestamp' = format(as.Date(x$timestamp), format = "%Y-%m-%d")
       )
       return(x)
     }else{
