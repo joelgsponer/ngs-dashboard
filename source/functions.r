@@ -45,6 +45,10 @@ enableActionButton <- function(id,session) {
                              list(code= paste("$('#",id,"').prop('disabled',false)"
                                     ,sep="")))
 } 
+page.refresh <- function(id,session) {
+  session$sendCustomMessage(type="jsCode",
+                             list(code= "location.reload();"))
+} 
 
 updateModifyFields <- function(session_, fields, tables){
   tryCatch({

@@ -1,5 +1,4 @@
 library(shiny)
-library(shinysky)
 source('setUp.r') 
 
 shinyUI(fluidPage(

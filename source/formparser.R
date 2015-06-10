@@ -269,7 +269,7 @@ fncResetUI <- function(session,path, verbose = F,...){
     error = 0
   ))
 }
-#Create a Unique primarz kez, which can be used to store data in a database
+#Create a Unique primary key, which can be used to store data in a database
 fncCreateUniquePrimarykey <- function(db,table,primarykey.label = "primarykey"){
   require(random)
   primarykey.is.unique <- F

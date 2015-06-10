@@ -1,3 +1,6 @@
+#############
+#Tab samples#
+#############
 #UI
 output$form_sample <- renderUI({
   fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)
@@ -29,7 +32,10 @@ registerSample <- observe({
           ,primarykey.val = currentSample
         )
       }
-      if(mess$error == 0 & mess$result) fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
+      if(mess$error == 0 & mess$result){
+        fncResetUI(session = session,'ui_elements/form_sample/', verbose = T)
+        page.refresh(session = session)
+      }
       session$sendCustomMessage(
          type = 'testmessage'
         ,message = mess$message
@@ -60,3 +66,4 @@ observe({
       fncCreateUI('ui_elements/form_sample/',db = db,verbose = T)    
    }
   })
+#

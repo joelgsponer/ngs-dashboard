@@ -2,7 +2,6 @@ options(shiny.trace=FALSE)
 
 #Load the dependencies
 library(shiny)
-library(shinysky)
 source('setUp.r')
 
 
@@ -13,11 +12,8 @@ updateModifyFields(session_ = session
   ,fields = c('sample.modify.primarykey', 'run.modify.primarykey','vcffile.modify.primarykey')
   ,tables=  c('tbl_samples','tbl_run','tbl_files')
 )
-#############
-#Tab samples#
-#############
-source("source/tab_samples/main.R")
-#####################
+source("source/tab_samples/main.R", local = T)
+####################
 #Tab Run information#
 #####################
 #UI
