@@ -76,11 +76,6 @@ source_https <- function(url, ...) {
   })
 }
  
- 
-source_https(
-   "https://raw.githubusercontent.com/joelgsponer/waRRior/master/bootstrap.R"
-)
-
 #Load configuration
 source("config.R")
 
