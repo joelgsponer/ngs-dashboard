@@ -1,22 +1,10 @@
-waRRior: backing up file data/ngs.sqlite to /var/shiny-server/www/webCGH/apps/ngs/data/backupdb/ 
+waRRior: backing up file data/ngs.sqlite to /home/joel/Dropbox/dev/ngs-dashboard/data/backupdb/ 
 waRRior: files in backup location matching the identifier
-	* 2015-05-05_14_28_12_ngs.sqlite 
-	* 2015-05-05_14_28_14_ngs.sqlite 
-	* 2015-05-05_14_28_16_ngs.sqlite 
-	* 2015-05-05_14_28_18_ngs.sqlite 
-	* 2015-05-05_14_28_34_ngs.sqlite 
-	* 2015-05-05_14_28_49_ngs.sqlite 
-	* 2015-05-05_17_08_11_ngs.sqlite 
-	* 2015-06-03_14_30_38_ngs.sqlite 
-	* 2015-06-04_12_27_51_ngs.sqlite 
-	* 2015-06-10_16_58_05_ngs.sqlite 
-waRRior: total number of files 10 
-waRRior: deleting previous backup file 2015-05-05_14_28_12_ngs.sqlite due to max.backup.files restriction (max files: 10 
-[1] TRUE
-[1] "2015-06-10_17_00_15_ngs"
+waRRior: total number of files 0 
+[1] "2015-06-10_19_31_27_ngs"
 [1] "data/ngs.sqlite"
 [1] "sqlite"
-[1] "2015-06-10_17_00_15_ngs.sqlite"
-waRRior: creating backup /var/shiny-server/www/webCGH/apps/ngs/data/backupdb//2015-06-10_17_00_15_ngs.sqlite 
+[1] "2015-06-10_19_31_27_ngs.sqlite"
+waRRior: creating backup /home/joel/Dropbox/dev/ngs-dashboard/data/backupdb//2015-06-10_19_31_27_ngs.sqlite 
 [1] TRUE
 waRRior: btn.createBackup success
